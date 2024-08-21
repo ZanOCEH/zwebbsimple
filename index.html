@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Panel via WhatsApp</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000; /* Background hitam */
+            color: #fff; /* Teks putih */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: auto;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
+            background: #333; /* Warna latar belakang kontainer */
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(255,0,0,0.5), 0 0 15px rgba(0,255,0,0.5), 0 0 15px rgba(0,0,255,0.5); /* Animasi bayangan RGB */
+            text-align: center;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Maksimum lebar untuk slideshow */
+            margin: 20px auto;
+            overflow: hidden;
+            background: #222; /* Latar belakang slideshow */
+            border-radius: 8px;
+        }
+        .slideshow-container::before {
+            content: '';
+            display: block;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        .slides {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            width: 100%;
+        }
+        .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .dot-container {
+            text-align: center;
+            padding: 10px 0;
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+        .dot {
+            height: 12px;
+            width: 12px;
+            background-color: #666; /* Warna dot default */
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+        .active-dot {
+            background-color: #fff; /* Warna dot aktif */
+        }
+        .order-section {
+            margin-top: 20px;
+        }
+        .order-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            color: #fff;
+            background-color: #25D366;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .order-btn:hover {
+            background-color: #1EBE6F;
+        }
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .product-card {
+            background-color: #444; /* Latar belakang kartu produk */
+            border: 1px solid #666; /* Border produk */
+            border-radius: 8px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 300px;
+            box-shadow: 0 4px 8px rgba(255,0,0,0.5), 0 4px 8px rgba(0,255,0,0.5), 0 4px 8px rgba(0,0,255,0.5); /* Animasi bayangan RGB */
+            text-align: center;
+            padding: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .product-card img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+        .product-card h3 {
+            margin: 15px 0;
+            font-size: 1.5rem;
+        }
+        .product-card p {
+            margin: 0 15px 15px;
+            color: #ccc; /* Warna teks deskripsi produk */
+        }
+        .product-card .price-btn {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 8px 16px;
+            background-color: #ff5722;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .product-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(255,0,0,0.7), 0 8px 16px rgba(0,255,0,0.7), 0 8px 16px rgba(0,0,255,0.7); /* Animasi bayangan RGB saat hover */
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 1024px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+            .product-card h3 {
+                font-size: 1.4rem;
+            }
+            .slideshow-container {
+                max-width: 600px; /* Ukuran lebih kecil untuk tablet */
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.7rem;
+            }
+            .order-btn {
+                font-size: 1rem;
+                padding: 8px 16px;
+            }
+            .product-card h3 {
+                font-size: 1.3rem;
+            }
+            .product-card {
+                max-width: 45%;
+            }
+            .slideshow-container {
+                max-width: 500px; /* Ukuran lebih kecil untuk perangkat mobile besar */
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            .order-btn {
+                font-size: 0.9rem;
+                padding: 6px 12px;
+            }
+            .product-card {
+                max-width: 100%;
+            }
+            .product-card h3 {
+                font-size: 1.2rem;
+            }
+            .slideshow-container {
+                max-width: 100%; /* Lebar penuh untuk perangkat mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Order Panel Via WhatsApp</h1>
+
+        <div class="slideshow-container">
+            <div class="slides">
+                <div class="slide">
+                    <img src="https://telegra.ph/file/33abba1045bdcf3ed7117.jpg" alt="Slide 1">
+                </div>
+                <div class="slide">
+                    <img src="https://telegra.ph/file/e500190785caebb7c9dc3.jpg" alt="Slide 2">
+                </div>
+                <div class="slide">
+                    <img src="https://telegra.ph/file/f27efb844bf840fbe7589.jpg" alt="Slide 3">
+                </div>
+            </div>
+            <div class="dot-container">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+
+        <div class="order-section">
+            <p>Untuk melakukan pemesanan, klik tombol di bawah ini untuk menghubungi kami melalui WhatsApp.</p>
+            <a href="https://wa.me/PHONE_NUMBER?text=Halo%2C%20saya%20ingin%20memesan%20Nokos." class="order-btn" target="_blank">
+                Order via WhatsApp
+            </a>
+        </div>
+
+        <div class="product-list">
+            <div class="product-card">
+                <img src="https://telegra.ph/file/33abba1045bdcf3ed7117.jpg" alt="Produk 1">
+                <h3>Nama Produk 1</h3>
+                <p>Deskripsi singkat produk 1.</p>
+                <a href="#" class="price-btn">Rp100.000</a>
+            </div>
+            <div class="product-card">
+                <img src="https://telegra.ph/file/e500190785caebb7c9dc3.jpg" alt="Produk 2">
+                <h3>Nama Produk 2</h3>
+                <p>Deskripsi singkat produk 2.</p>
+                <a href="#" class="price-btn">Rp200.000</a>
+            </div>
+            <div class="product-card">
+                <img src="https://telegra.ph/file/f27efb844bf840fbe7589.jpg" alt="Produk 3">
+                <h3>Nama Produk 3</h3>
+                <p>Deskripsi singkat produk 3.</p>
+                <a href="#" class="price-btn">Rp300.000</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        
+        function showSlides() {
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = 'none';  
+            }
+            slideIndex++;
+            if (slideIndex > slides.length) {slideIndex = 1}    
+            slides[slideIndex-1].style.display = 'flex';  
+            
+            for (let i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(' active-dot', '');
+            }
+            dots[slideIndex-1].className += ' active-dot';
+            
+            setTimeout(showSlides, 5000); // Ganti gambar setiap 5 detik
+        }
+        
+        showSlides(); // Jalankan slideshow
+    </script>
+</body>
+</html>
